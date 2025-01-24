@@ -1,7 +1,7 @@
-// pages/LoginPage.tsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/login.scss";
+import API from "../utils/api.ts"; // Import Axios instance
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -11,28 +11,20 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Placeholder for your actual login logic (API call or validation)
-    if (email === "test@example.com" && password === "password") {
-      console.log("Login successful!");
-      alert("Login successful!"); // Or redirect to a home page
-    } else {
-      setErrorMessage("Incorrect username or password");
+    try {
+      const response = await API.post("/users/login", { email, password });
+      alert(response.data); // Login successful message
+      // Redirect or handle success logic
+    } catch (error: any) {
+      setErrorMessage(
+        error.response?.data || "Something went wrong. Please try again."
+      );
     }
   };
 
   return (
     <div className="login-page">
-      <div
-        style={{
-          fontFamily: "Arial",
-          fontWeight: "bold",
-          color: "red",
-          textAlign: "center",
-        }}
-      >
-        <h1>Welcome to Connection Ranga</h1>
-      </div>
-
+      <h1>Welcome to Connection Ranga</h1>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -54,14 +46,13 @@ const LoginPage: React.FC = () => {
           />
         </div>
         <button type="submit">Submit</button>
-        <div className="md:py-4">
+        <div>
           <Link to="/signup">Sign Up</Link>
         </div>
+        <div className="forgot-password">
+          <Link to="/forget-password">Forgot Password?</Link>
+        </div>
       </form>
-      <div className="forgot-password">
-        <Link to="/forget-password">Forgot Password?</Link>{" "}
-        {/* Use Link here as well */}
-      </div>
     </div>
   );
 };

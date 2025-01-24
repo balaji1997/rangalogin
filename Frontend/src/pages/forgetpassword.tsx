@@ -1,15 +1,23 @@
 // pages/ForgetPassword.tsx
 import React, { useState } from 'react';
 import '../styles/forgetpassword.scss';
+import API from '../utils/api.ts';
+
 
 const ForgetPassword: React.FC = () => {
   const [email, setEmail] = useState<string>('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Placeholder for forget password logic (API call)
-    console.log("Forget Password Submitted")
+  
+    try {
+      const response = await API.post("/users/forget-password", { email });
+      alert(response.data); // Message from the backend
+    } catch (error: any) {
+      alert(error.response?.data || "Failed to send reset link. Try again.");
+    }
   };
+  
 
   return (
     <div className="forget-password">
